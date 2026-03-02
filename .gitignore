@@ -1,0 +1,5 @@
+watcher.db
+__pycache__/
+*.pyc
+.env
+config_local.py
