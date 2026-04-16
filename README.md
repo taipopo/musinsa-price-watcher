@@ -1,64 +1,87 @@
-# 무신사 收藏商品价格监测
+# Musinsa Price Watcher
 
-在网页上添加你要关注的 무신사 商品链接，程序会定期检查价格，**价格变动时用邮件提醒你**。
+这是一个用于监测 무신사 商品价格变化的 Flask Web App，同时已经补好了 iPhone 可安装的 Capacitor 包装方案。
 
----
+## 功能
 
-## 你需要做的事（3 步）
+- 添加 무신사 商品链接
+- 定时检查价格变化
+- 价格变化邮件提醒
+- 手机端友好的界面
+- 支持通过 Capacitor 打包成 iPhone App
 
-### 1. 安装运行环境
-
-- 安装 **Python 3**（若未安装：到 [python.org](https://www.python.org/downloads/) 下载安装）。
-- 在「终端」里进入项目文件夹并安装依赖：
-
-```bash
-cd musinsa-price-watcher
-pip install -r requirements.txt
-```
-
-若使用「浏览器抓取」方式（推荐，因为 무신사 可能用 JavaScript 显示价格），再执行一次：
-
-```bash
-playwright install chromium
-```
-
-### 2. 配置邮件（用于接收价格变动提醒）
-
-用记事本打开项目里的 **`config.py`**，按你的邮箱修改：
-
-- **QQ 邮箱**：`MAIL_SMTP = "smtp.qq.com"`，`MAIL_USER` 填你的 QQ 邮箱，`MAIL_PASSWORD` 填 QQ 邮箱里的「授权码」（在 QQ 邮箱网页版 → 设置 → 账户 → POP3/IMAP 里开启并获取）。
-- **163 邮箱**：`MAIL_SMTP = "smtp.163.com"`，同样在 163 里开启 SMTP 并填授权码。
-
-若暂时不想收邮件，可把 `MAIL_PASSWORD` 留空，程序照常运行，只是不会发邮件。
-
-### 3. 启动网站
-
-在终端执行：
+## 运行 Web 版
 
 ```bash
 python app.py
 ```
 
-然后在浏览器打开：**http://127.0.0.1:5000**。
+然后在浏览器打开：
 
----
+```text
+http://127.0.0.1:5000
+```
 
-## 怎么添加要监测的商品？
+## Render 部署
 
-- 打开 [무신사 收藏页](https://www.musinsa.com/like/goods)，登录你的账号。
-- 在收藏里点进某个商品，**复制浏览器地址栏的链接**（例如 `https://www.musinsa.com/app/goods/123456`）。
-- 在本项目打开的网页里，把链接粘贴到「添加商品」输入框，点「添加」。
+Render 会把你的 Flask 服务部署到公网 HTTPS，这样 iPhone App 才能正常访问。
 
-程序会定期（默认每 60 分钟）检查这些链接对应的价格；一旦发现价格变化，就会给你在「通知邮箱」里填的邮箱发一封邮件。
+### 需要的文件
 
----
+- `requirements.txt`
+- `app.py`
+- `database.py`
+- `fetcher.py`
+- `notifier.py`
+- `config.py`
 
-## 其他说明
+### 建议的启动命令
 
-- **立即检查**：在网页里点「立即检查一次价格」可马上跑一次检查，不必等定时。
-- **历史价格**：每个商品旁有「历史」按钮，点开可看该商品每次监测记录的时间与价格，并标注相对上一次是涨 ↑ 还是跌 ↓，便于判断走势。
-- **修改检查间隔**：在 `config.py` 里改 `CHECK_INTERVAL_MINUTES`（单位：分钟）。
-- **数据存放**：商品和价格历史存在同目录下的 `watcher.db` 文件里，可自行备份。
-- **仅个人使用**：本工具仅供你在本地监测自己关心的商品，请勿对 무신사 进行高频访问，以免给对方服务器造成压力。
+```bash
+python app.py
+```
 
-如有问题，可检查终端里的报错信息，或根据报错再查解决办法。
+### 环境变量建议
+
+- `PORT`：Render 会自动提供
+- `MAIL_USER`：发件邮箱
+- `MAIL_PASSWORD`：邮箱授权码
+
+## iPhone 打包前提
+
+你需要准备：
+
+- Mac
+- Xcode
+- Apple ID
+- Node.js / npm
+- 一个可公网访问的 HTTPS 后端地址
+
+## iPhone 安装步骤
+
+1. 先把 Flask 网站部署到 Render
+2. 把 Render 给你的公网 HTTPS 地址填到 `capacitor.config.ts` 的 `server.url`
+3. 在项目根目录执行：
+
+```bash
+npm install
+npx cap add ios
+npx cap sync ios
+npx cap open ios
+```
+
+4. 在 Xcode 中选择 Team
+5. 连接 iPhone 真机并运行
+
+## 配置说明
+
+`config.py` 里可以设置：
+
+- 邮件 SMTP
+- 检查间隔
+- 是否使用浏览器抓取
+
+## 重要说明
+
+- 如果 `server.url` 仍然是 `https://YOUR-DOMAIN-HERE`，iPhone App 不能正常访问网页
+- 如果你愿意，我可以继续帮你把项目改成“前端静态内置 + API 后端”的结构，这样更适合原生 App 打包

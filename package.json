@@ -1,0 +1,19 @@
+{
+  "name": "musinsa-price-watcher",
+  "private": true,
+  "version": "1.0.0",
+  "description": "무신사 가격监测 Web App + iPhone wrapper",
+  "scripts": {
+    "cap:sync": "npx cap sync ios",
+    "cap:add:ios": "npx cap add ios",
+    "cap:open:ios": "npx cap open ios"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.2",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.4.2",
+    "@capacitor/ios": "^7.6.1"
+  }
+}

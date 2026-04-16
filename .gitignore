@@ -1,5 +1,10 @@
 watcher.db
 __pycache__/
+google-form-bot/*/playwright_profile/
 *.pyc
 .env
 config_local.py
+node_modules/
+ios/App/App/public/
+ios/App/build/
+.DS_Store

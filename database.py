@@ -18,8 +18,11 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             url TEXT NOT NULL UNIQUE,
             name TEXT,
+            image_url TEXT,
             current_price INTEGER,
             last_price INTEGER,
+            is_time_sale INTEGER DEFAULT 0,
+            is_sold_out INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
@@ -43,5 +46,16 @@ def init_db():
             value TEXT
         );
     """)
+    # 兼容旧库：补充可能缺失的列
+    try:
+        cols = {row[1] for row in conn.execute("PRAGMA table_info(products)").fetchall()}
+        if "image_url" not in cols:
+            conn.execute("ALTER TABLE products ADD COLUMN image_url TEXT")
+        if "is_time_sale" not in cols:
+            conn.execute("ALTER TABLE products ADD COLUMN is_time_sale INTEGER DEFAULT 0")
+        if "is_sold_out" not in cols:
+            conn.execute("ALTER TABLE products ADD COLUMN is_sold_out INTEGER DEFAULT 0")
+    except Exception:
+        pass
     conn.commit()
     conn.close()

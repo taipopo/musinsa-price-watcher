@@ -1,0 +1,12 @@
+{
+  "appId": "com.popo.musinsa.pricewatcher",
+  "appName": "Musinsa Price Watcher",
+  "webDir": "web",
+  "server": {
+    "url": "https://YOUR-DOMAIN-HERE",
+    "cleartext": false
+  },
+  "ios": {
+    "contentInset": "automatic"
+  }
+}
